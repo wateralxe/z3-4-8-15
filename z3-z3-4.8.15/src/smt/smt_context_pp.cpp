@@ -331,7 +331,28 @@ namespace smt {
                 literal l_curr=get_literal(n);
                 std::stringstream ss;
                 ss<<l_curr.var()<<" ";
-                if(to_app(n)->get_decl()->get_name()=="or"){
+                if(to_app(n)->get_decl()->get_name()=="="&&m.is_bool(to_app(n)->get_arg(0))){
+                    expr *eq_term_a=to_app(n)->get_arg(0);
+                    expr *eq_term_b=to_app(n)->get_arg(1);
+                    bool_var A,a,b,c;
+                    if(to_app(eq_term_a)->get_decl()->get_name()=="not"){a=-get_bool_var_of_id(to_app(eq_term_a)->get_arg(0)->get_id());}else{a=get_bool_var_of_id(eq_term_a->get_id());}
+                    if(to_app(eq_term_b)->get_decl()->get_name()=="not"){b=-get_bool_var_of_id(to_app(eq_term_b)->get_arg(0)->get_id());}else{b=get_bool_var_of_id(eq_term_b->get_id());}
+                    A=l_curr.var();
+                    std::vector<int> clause_tmp;
+                    clause_tmp.push_back(-A);clause_tmp.push_back(-a);clause_tmp.push_back(b);//-A or -a or b
+                    clauses_vec.push_back(clause_tmp);
+                    clause_tmp.clear();
+                    clause_tmp.push_back(-A);clause_tmp.push_back(a);clause_tmp.push_back(-b);//-A or a or -b
+                    clauses_vec.push_back(clause_tmp);
+                    clause_tmp.clear();
+                    clause_tmp.push_back(A);clause_tmp.push_back(-a);clause_tmp.push_back(-b);//A or -a or -b
+                    clauses_vec.push_back(clause_tmp);
+                    clause_tmp.clear();
+                    clause_tmp.push_back(A);clause_tmp.push_back(a);clause_tmp.push_back(b);//A or a or b
+                    clauses_vec.push_back(clause_tmp);
+                    ss<< "equal_new_var"<<new_var_num++;
+                }
+                else if(to_app(n)->get_decl()->get_name()=="or"){
                     std::vector<int> clause_tmp;
                     clause_tmp.push_back(-l_curr.var());
                     for (unsigned j = 0; j < to_app(n)->get_num_args(); j++) {
