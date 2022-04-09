@@ -41,6 +41,7 @@ Revision History:
 #include "smt/smt_model_finder.h"
 #include "smt/smt_parallel.h"
 #include "smt/smt_arith_value.h"
+#define LS_DEBUG
 
 namespace smt {
 
@@ -3529,7 +3530,20 @@ namespace smt {
         }
         else {
             TRACE("before_search", display(tout););
-            return check_finalize(search());
+            expr_bool_var_map();
+            lbool r=search();
+            if(r!=l_undef){return check_finalize(r);}else
+            {
+#ifdef LS_DEBUG
+                std::cout<<"0\n"<<clauses_vec.size()<<"\n";
+                for(auto cl:clauses_vec){
+                    std::cout<<"(";
+                    for(auto l:cl){std::cout<<" "<<l;}
+                    std::cout<<" )\n";
+                }
+#endif
+                return l_true;
+            }
         }
     }
 

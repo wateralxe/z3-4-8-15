@@ -303,6 +303,10 @@ namespace smt {
             m_clause_proof.add(l, CLS_AUX, j);
             assign(l, j);
             mark_as_relevant(l);
+            std::vector<int> clause_tmp;
+            if(l.sign()){clause_tmp.push_back(-l.var());}
+            else{clause_tmp.push_back(l.var());}
+            clauses_vec.push_back(clause_tmp);
         }
     }
 
@@ -1579,6 +1583,13 @@ namespace smt {
         }
         else {
             mk_clause(num_lits, lits, nullptr);
+            std::vector<int> clause_tmp;
+            clause_tmp.resize(num_lits);
+            for(int i=0;i<num_lits;i++){
+                int lit_term=(lits[i].sign())?(-lits[i].var()):(lits[i].var());
+                clause_tmp[i]=lit_term;
+            }
+            clauses_vec.push_back(clause_tmp);
         }
     }
 

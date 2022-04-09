@@ -30,9 +30,9 @@ namespace smt {
         else if (lit == null_literal)
             out << "null";
         else if (lit.sign())
-            out << "(not " << mk_bounded_pp(bool_var2expr_map[lit.var()], m, 3) << ")";
+            out << "( not " << mk_bounded_pp(bool_var2expr_map[lit.var()], m, 5) << " )";
         else
-            out << mk_bounded_pp(bool_var2expr_map[lit.var()], m, 3);
+            out << mk_bounded_pp(bool_var2expr_map[lit.var()], m, 5);
         return out;
     }
 

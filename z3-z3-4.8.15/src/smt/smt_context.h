@@ -51,6 +51,7 @@ Revision History:
 #include "solver/progress_callback.h"
 #include "solver/assertions/asserted_formulas.h"
 #include <tuple>
+#include <vector>
 
 // there is a significant space overhead with allocating 1000+ contexts in
 // the case that each context only references a few expressions.
@@ -76,6 +77,9 @@ namespace smt {
 
 
     protected:
+        // boolidl::bool_ls_solver *   m_bool_ls_solver;
+        // lia::ls_solver *            m_lia_ls_solver;
+        // nia::ls_solver *            m_nia_ls_solver;
         ast_manager &               m;
         smt_params &                m_fparams;
         params_ref                  m_params;
@@ -165,6 +169,7 @@ namespace smt {
 #else
         u_map<bool_var>             m_expr2bool_var;
 #endif
+        std::vector<std::vector<int> >            clauses_vec;//记录子句信息
         ptr_vector<expr>            m_bool_var2expr;         // bool_var -> expr
         signed_char_vector          m_assignment;  //!< mapping literal id -> assignment lbool
         vector<watch_list>          m_watches;     //!< per literal
@@ -1405,6 +1410,7 @@ namespace smt {
 
         void display_expr_bool_var_map(std::ostream & out) const;
 
+        void expr_bool_var_map();
         void display_relevant_exprs(std::ostream & out) const;
 
         void display_theories(std::ostream & out) const;
