@@ -50,6 +50,8 @@ Revision History:
 #include "model/model.h"
 #include "solver/progress_callback.h"
 #include "solver/assertions/asserted_formulas.h"
+#include "smt/nia_ls/nia_ls.h"
+#include "smt/lia_ls/lia_ls.h"
 #include <tuple>
 #include <vector>
 
@@ -78,8 +80,8 @@ namespace smt {
 
     protected:
         // boolidl::bool_ls_solver *   m_bool_ls_solver;
-        // lia::ls_solver *            m_lia_ls_solver;
-        // nia::ls_solver *            m_nia_ls_solver;
+        lia::ls_solver *            m_lia_ls_solver;
+        nia::ls_solver *            m_nia_ls_solver;
         ast_manager &               m;
         smt_params &                m_fparams;
         params_ref                  m_params;

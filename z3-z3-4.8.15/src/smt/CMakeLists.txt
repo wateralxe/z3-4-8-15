@@ -91,4 +91,6 @@ z3_add_component(smt
     proto_model
     simplex
     substitution
+    nia_ls
+    lia_ls
 )

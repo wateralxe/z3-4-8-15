@@ -81,6 +81,8 @@ namespace smt {
         m_mk_enode_trail(*this),
         m_mk_lambda_trail(*this) {
 
+        m_lia_ls_solver=new lia::ls_solver((int)m_fparams.m_random_seed);
+        m_nia_ls_solver=new nia::ls_solver((int)m_fparams.m_random_seed);
         SASSERT(m_scope_lvl == 0);
         SASSERT(m_base_lvl == 0);
         SASSERT(m_search_lvl == 0);
@@ -3531,10 +3533,10 @@ namespace smt {
         else {
             TRACE("before_search", display(tout););
             expr_bool_var_map();
-            lbool r=search();
-            if(r!=l_undef){return check_finalize(r);}else
+            // lbool r=search();
+            // if(r!=l_undef){return check_finalize(r);}else
             {
-#ifdef LS_DEBUG
+#ifdef NLS_DEBUG
                 std::cout<<"0\n"<<clauses_vec.size()<<"\n";
                 for(auto cl:clauses_vec){
                     std::cout<<"(";
@@ -3542,7 +3544,15 @@ namespace smt {
                     std::cout<<" )\n";
                 }
 #endif
-                return l_true;
+                m_nia_ls_solver->build_instance(clauses_vec);
+                if(m_nia_ls_solver->has_high_coff){return l_undef;}
+                m_nia_ls_solver->local_search();
+                if(m_nia_ls_solver->best_found_cost==0){
+                    // m_model_generator->reset();
+                    // m_proto_model = m_model_generator->mk_model_ls(m_nia_ls_solver);
+                    return check_finalize(l_true);
+                }
+                return check_finalize(l_undef);
             }
         }
     }
