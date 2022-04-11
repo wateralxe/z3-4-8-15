@@ -3548,8 +3548,8 @@ namespace smt {
                 if(m_nia_ls_solver->has_high_coff){return l_undef;}
                 m_nia_ls_solver->local_search();
                 if(m_nia_ls_solver->best_found_cost==0){
-                    // m_model_generator->reset();
-                    // m_proto_model = m_model_generator->mk_model_ls(m_nia_ls_solver);
+                    m_model_generator->reset();
+                    m_proto_model = m_model_generator->mk_model_ls(m_nia_ls_solver);
                     return check_finalize(l_true);
                 }
                 return check_finalize(l_undef);
