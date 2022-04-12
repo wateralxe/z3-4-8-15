@@ -3511,6 +3511,7 @@ namespace smt {
        \remark A logical context can only be configured at scope level 0,
        and before internalizing any formulas.
     */
+   static bool first_into_cxt=true;//only in 2nd round will the LS be called
     lbool context::setup_and_check(bool reset_cancel) {
         if (!check_preamble(reset_cancel)) return l_undef;
         SASSERT(m_scope_lvl == 0);
@@ -3533,8 +3534,11 @@ namespace smt {
         else {
             TRACE("before_search", display(tout););
             expr_bool_var_map();
-            // lbool r=search();
-            // if(r!=l_undef){return check_finalize(r);}else
+            if(first_into_cxt){
+                first_into_cxt=false;
+                return check_finalize(search());
+            }
+            else
             {
 #ifdef NLS_DEBUG
                 std::cout<<"0\n"<<clauses_vec.size()<<"\n";
