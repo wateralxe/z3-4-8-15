@@ -3533,14 +3533,7 @@ namespace smt {
         }
         else {
             TRACE("before_search", display(tout););
-            expr_bool_var_map();
-            if(first_into_cxt){
-                first_into_cxt=false;
-                return check_finalize(search());
-            }
-            else
-            {
-#ifdef NLS_DEBUG
+            #ifdef NLS_DEBUG
                 std::cout<<"0\n"<<clauses_vec.size()<<"\n";
                 for(auto cl:clauses_vec){
                     std::cout<<"(";
@@ -3548,15 +3541,60 @@ namespace smt {
                     std::cout<<" )\n";
                 }
 #endif
-                m_nia_ls_solver->build_instance(clauses_vec);
-                if(m_nia_ls_solver->has_high_coff){return l_undef;}
-                m_nia_ls_solver->local_search();
-                if(m_nia_ls_solver->best_found_cost==0){
-                    m_model_generator->reset();
-                    m_proto_model = m_model_generator->mk_model_ls(m_nia_ls_solver);
-                    return check_finalize(l_true);
+            std::string logic_name=m_setup.get_logic().str();
+            bool is_NIA=(logic_name=="QF_NIA");
+            bool is_IDL=(logic_name=="QF_IDL");
+            bool is_LIA=(logic_name=="QF_LIA");
+            if(is_NIA){
+                if(first_into_cxt){
+                    first_into_cxt=false;
+                    return check_finalize(search());
                 }
-                return check_finalize(l_undef);
+                else{
+                    expr_bool_var_map(m_nia_ls_solver);
+                    m_nia_ls_solver->build_instance(clauses_vec);
+                    if(m_nia_ls_solver->has_high_coff){return l_undef;}
+                    m_nia_ls_solver->local_search();
+                    if(m_nia_ls_solver->best_found_cost==0){
+                        m_model_generator->reset();
+                        m_proto_model = m_model_generator->mk_model_ls(m_nia_ls_solver);
+                        return check_finalize(l_true);
+                    }
+                    return check_finalize(l_undef);
+                }
+            }//NIA case
+            // else if(is_LIA)
+            // {
+            //         expr_bool_var_map(m_lia_ls_solver);
+            //         m_lia_ls_solver->build_instance(clauses_vec);
+            //         m_lia_ls_solver->local_search();
+            //         if(m_lia_ls_solver->best_found_cost==0){
+            //             // m_model_generator->reset();
+            //             // m_proto_model = m_model_generator->mk_model_ls(m_lia_ls_solver);
+            //             return check_finalize(l_true);
+            //         }
+            //         return check_finalize(l_undef);
+            // }//LIA case
+            else if(is_IDL)
+            {
+                if(first_into_cxt){
+                    first_into_cxt=false;
+                    return check_finalize(search());
+                }
+                else{
+                    expr_bool_var_map(m_lia_ls_solver);
+                    m_lia_ls_solver->build_instance(clauses_vec);
+                    m_lia_ls_solver->local_search();
+                    if(m_lia_ls_solver->best_found_cost==0){
+                        // m_model_generator->reset();
+                        // m_proto_model = m_model_generator->mk_model_ls(m_lia_ls_solver);
+                        return check_finalize(l_true);
+                    }
+                    return check_finalize(l_undef);
+                }
+            }//IDL case
+            else{
+                return check_finalize(search());
             }
         }
     }

@@ -91,6 +91,13 @@ tactic * mk_qfidl_tactic(ast_manager & m, params_ref const & p) {
                  using_params(mk_pb2bv_tactic(m), pb2bv_p),
                  fail_if(mk_not(mk_is_qfbv_probe())),
                  bv_solver);
+
+    tactic * use_ls_tactic=
+            cond(mk_ge(mk_num_bool_consts_probe(),mk_const_probe(static_cast<double>(10))),
+                                                          mk_smt_tactic(m),
+                                                          or_else(try_for(mk_smt_tactic(m),550000),
+                                                                mk_smt_tactic(m))
+                                                          );
     
     params_ref diff_neq_p;
     diff_neq_p.set_uint("diff_neq_max_k", 25);
@@ -101,9 +108,10 @@ tactic * mk_qfidl_tactic(ast_manager & m, params_ref const & p) {
                        using_params(and_then(preamble_st,
                                              or_else(using_params(mk_diff_neq_tactic(m), diff_neq_p),
                                                      try2bv,
-                                                     mk_smt_tactic(m))),
+                                                     use_ls_tactic
+                                                     )),
                                     main_p),
-                       mk_smt_tactic(m));
+                       use_ls_tactic);
     
     st->updt_params(p);
 

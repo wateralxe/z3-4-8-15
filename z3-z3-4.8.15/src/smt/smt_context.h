@@ -1412,7 +1412,8 @@ namespace smt {
 
         void display_expr_bool_var_map(std::ostream & out) const;
 
-        void expr_bool_var_map();
+        void expr_bool_var_map(nia::ls_solver *solver);
+        void expr_bool_var_map(lia::ls_solver *solver);
         void display_relevant_exprs(std::ostream & out) const;
 
         void display_theories(std::ostream & out) const;
