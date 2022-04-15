@@ -45,7 +45,7 @@ tactic * mk_qfidl_tactic(ast_manager & m, params_ref const & p) {
     lhs_p.set_bool("arith_lhs", true);
 
     params_ref lia2pb_p;
-    lia2pb_p.set_uint("lia2pb_max_bits", 4);
+    lia2pb_p.set_uint("lia2pb_max_bits",  5);
 
     params_ref pb2bv_p;
     pb2bv_p.set_uint("pb2bv_all_clauses_limit", 8);
@@ -93,7 +93,8 @@ tactic * mk_qfidl_tactic(ast_manager & m, params_ref const & p) {
                  bv_solver);
 
     tactic * use_ls_tactic=
-            cond(mk_ge(mk_num_bool_consts_probe(),mk_const_probe(static_cast<double>(10))),
+            cond(mk_or(mk_ge(mk_num_bool_consts_probe(),mk_const_probe(static_cast<double>(10))),
+                                mk_has_distinct_probe()),
                                                           mk_smt_tactic(m),
                                                           or_else(try_for(mk_smt_tactic(m),550000),
                                                                 mk_smt_tactic(m))
@@ -102,7 +103,8 @@ tactic * mk_qfidl_tactic(ast_manager & m, params_ref const & p) {
     params_ref diff_neq_p;
     diff_neq_p.set_uint("diff_neq_max_k", 25);
 
-    tactic * st = cond(mk_and(mk_lt(mk_num_consts_probe(), mk_const_probe(static_cast<double>(BIG_PROBLEM))),
+    tactic * st = and_then(when(mk_has_distinct_probe(),mk_skip_tactic()),
+                            cond(mk_and(mk_lt(mk_num_consts_probe(), mk_const_probe(static_cast<double>(BIG_PROBLEM))),
                               mk_and(mk_not(mk_produce_proofs_probe()),
                                      mk_not(mk_produce_unsat_cores_probe()))),
                        using_params(and_then(preamble_st,
@@ -111,7 +113,8 @@ tactic * mk_qfidl_tactic(ast_manager & m, params_ref const & p) {
                                                      use_ls_tactic
                                                      )),
                                     main_p),
-                       use_ls_tactic);
+                       use_ls_tactic)
+                        );
     
     st->updt_params(p);
 

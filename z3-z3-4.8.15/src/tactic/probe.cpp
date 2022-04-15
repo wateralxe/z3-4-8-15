@@ -564,5 +564,40 @@ probe * mk_has_quantifier_probe() {
     return alloc(has_quantifier_probe);
 }
 
+struct has_distinct_probe : public probe {
+    struct found {};
+    static int has_distinct;//0 means not visited, 1 true, -1 false
+    struct proc {
+        ast_manager  & m;
+        proc(ast_manager & _m):m(_m){}
+        void operator()(var * n) {}
+        void operator()(app * n) {
+            if(n->get_family_id()==m.get_basic_family_id()&&n->get_decl_kind()==OP_DISTINCT){throw found();}
+        }
+        void operator()(quantifier * n) {}
+    };
+public:
+    result operator()(goal const & g) override {
+        if(has_distinct!=0){return has_distinct>0;}
+        try {
+            expr_fast_mark1 visited;
+            proc p(g.m());
+            unsigned sz = g.size();
+            for (unsigned i = 0; i < sz; i++) {quick_for_each_expr(p, visited, g.form(i));}
+            has_distinct=-1;
+            return false;
+        }
+        catch (const found &) {
+            has_distinct=1;
+            return true;
+        }
+    }
+};
+int has_distinct_probe::has_distinct=0;
+
+probe * mk_has_distinct_probe() {
+    return alloc(has_distinct_probe);
+}
+
 
 
