@@ -191,6 +191,7 @@ namespace smt {
         void init_model();
         void mk_bool_model();
         void mk_bool_model(nia::ls_solver *solver);
+        void mk_bool_model(lia::ls_solver *solver);
         void mk_value_procs(obj_map<enode, model_value_proc *> & root2proc, ptr_vector<enode> & roots,  ptr_vector<model_value_proc> & procs);
         void mk_values();
         void mk_values_ls(lia::ls_solver *solver);
