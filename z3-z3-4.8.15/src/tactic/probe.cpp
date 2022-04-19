@@ -599,5 +599,32 @@ probe * mk_has_distinct_probe() {
     return alloc(has_distinct_probe);
 }
 
-
+struct has_ite_probe : public probe {
+    struct found {};
+    struct proc {
+        ast_manager  & m;
+        proc(ast_manager & _m):m(_m){}
+        void operator()(var * n) {}
+        void operator()(app * n) {
+            if(n->get_family_id()==m.get_basic_family_id()&&n->get_decl_kind()==OP_ITE){throw found();}
+        }
+        void operator()(quantifier * n) {}
+    };
+public:
+    result operator()(goal const & g) override {
+        try {
+            expr_fast_mark1 visited;
+            proc p(g.m());
+            unsigned sz = g.size();
+            for (unsigned i = 0; i < sz; i++) {quick_for_each_expr(p, visited, g.form(i));}
+            return false;
+        }
+        catch (const found &) {
+            return true;
+        }
+    }
+};
+probe * mk_has_ite_probe() {
+    return alloc(has_ite_probe);
+}
 

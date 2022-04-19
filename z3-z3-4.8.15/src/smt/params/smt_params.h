@@ -220,6 +220,7 @@ struct smt_params : public preprocessor_params,
     bool                m_check_at_labels; // check that @ labels are inserted to generate unique counter-examples.
     bool                m_dump_goal_as_smt;
     bool                m_auto_config;
+    bool                m_use_ls;
 
     // -----------------------------------
     //
@@ -309,6 +310,7 @@ struct smt_params : public preprocessor_params,
         m_check_at_labels(false),
         m_dump_goal_as_smt(false),
         m_auto_config(true),
+        m_use_ls(false),
         m_string_solver(symbol("auto")){
         updt_local_params(p);
     }

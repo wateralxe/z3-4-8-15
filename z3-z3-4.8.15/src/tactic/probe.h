@@ -93,6 +93,7 @@ probe * mk_produce_unsat_cores_probe();
 probe * mk_has_quantifier_probe();
 probe * mk_has_pattern_probe();
 probe * mk_has_distinct_probe();
+probe * mk_has_ite_probe();
 
 /*
   ADD_PROBE("has-quantifiers", "true if the goal contains quantifiers.", "mk_has_quantifier_probe()")

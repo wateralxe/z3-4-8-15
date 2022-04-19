@@ -75,6 +75,13 @@ static tactic * mk_no_cut_no_relevancy_smt_tactic(ast_manager& m, unsigned rs) {
     return annotate_tactic("no-cut-relevancy-tactic", using_params(mk_smt_tactic_using(m, false), solver_p));
 }
 
+static tactic * mk_ls_smt_tactic(ast_manager& m,  unsigned rs) {
+    params_ref solver_p;
+    solver_p.set_bool("use_ls",true);
+    solver_p.set_uint("random_seed", rs);
+    return annotate_tactic("ls-tactic", using_params(mk_smt_tactic_using(m, false), solver_p));
+}
+
 static tactic * mk_bv2sat_tactic(ast_manager & m) {
     params_ref solver_p;
     // The cardinality constraint encoding generates a lot of shared if-then-else's that can be flattened.
@@ -213,6 +220,16 @@ tactic * mk_qflia_tactic(ast_manager & m, params_ref const & p) {
 
     params_ref lhs_p;
     lhs_p.set_bool("arith_lhs", true);
+    params_ref p_ls;
+    p_ls.set_bool("use_ls",true);
+    tactic * use_ls_tactic=
+            cond(mk_or(
+                mk_ge(mk_num_bool_consts_probe(),mk_const_probe(static_cast<double>(10))),mk_has_ite_probe()),
+                                                          mk_smt_tactic(m),
+                                                          or_else(try_for(mk_ls_smt_tactic(m,10),10000),
+                                                                  try_for(mk_ls_smt_tactic(m,11),10000),  //如果没有ITE，且没有布尔，则用2个随机种子尝试10秒的LS
+                                                                mk_smt_tactic(m))
+                                                          );
 
     tactic* st = using_params(
         and_then(
@@ -224,7 +241,7 @@ tactic * mk_qflia_tactic(ast_manager & m, params_ref const & p) {
                     using_params(mk_lia2sat_tactic(m), quasi_pb_p),
                     mk_fail_if_undecided_tactic()),
                 mk_bounded_tactic(m),
-                mk_smt_tactic(m))),
+                use_ls_tactic)),
         main_p);
 
     
