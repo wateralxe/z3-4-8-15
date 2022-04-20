@@ -337,10 +337,6 @@ namespace smt {
     }
 
     void setup::setup_QF_IDL(static_features & st) {
-        if (!is_in_diff_logic(st))
-            throw default_exception("Benchmark is not in QF_IDL (integer difference logic).");
-        if (st.m_has_real)
-            throw default_exception("Benchmark has real variables but it is marked as QF_IDL (integer difference logic).");
         TRACE("setup", tout << "setup QF_IDL, m_arith_k_sum: " << st.m_arith_k_sum << " m_num_diff_terms: " << st.m_num_arith_terms << "\n";
               st.display_primitive(tout););
         TRACE("setup", tout << "setup_QF_IDL(st)\n";);
