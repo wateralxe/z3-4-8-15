@@ -98,7 +98,7 @@ namespace smt {
                 std::string var_name=var_name_stream.str();
                 std::string var_value;
                 solver->print_var_solution(var_name,var_value);
-                expr * v      =  m.mk_true() ;
+                expr * v      = var_value=="1" ? m.mk_true() : m.mk_false();
                 m_model->register_decl(d, v);
             }
         }
@@ -115,7 +115,7 @@ namespace smt {
                 std::string var_name=var_name_stream.str();
                 std::string var_value;
                 solver->print_var_solution(var_name,var_value);
-                expr * v      = var_value=="1" ? m.mk_true() : m.mk_false();
+                expr * v  = m.mk_true();
                 m_model->register_decl(d, v);
             }
         }
