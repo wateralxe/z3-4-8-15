@@ -81,7 +81,7 @@ namespace smt {
         m_mk_enode_trail(*this),
         m_mk_lambda_trail(*this) {
 
-        m_lia_ls_solver=new lia::ls_solver((int)m_fparams.m_random_seed);
+        m_lia_ls_solver=new lia::ls_solver((int)m_fparams.m_random_seed,m_fparams.m_ls_time);
         m_nia_ls_solver=new nia::ls_solver((int)m_fparams.m_random_seed);
         SASSERT(m_scope_lvl == 0);
         SASSERT(m_base_lvl == 0);

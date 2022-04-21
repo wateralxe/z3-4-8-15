@@ -221,6 +221,7 @@ struct smt_params : public preprocessor_params,
     bool                m_dump_goal_as_smt;
     bool                m_auto_config;
     bool                m_use_ls;
+    unsigned            m_ls_time;
 
     // -----------------------------------
     //
@@ -311,6 +312,7 @@ struct smt_params : public preprocessor_params,
         m_dump_goal_as_smt(false),
         m_auto_config(true),
         m_use_ls(false),
+        m_ls_time(1200),
         m_string_solver(symbol("auto")){
         updt_local_params(p);
     }

@@ -143,6 +143,7 @@ public:
     //initialize
     ls_solver();
     ls_solver(int random_seed);
+    ls_solver(int random_seed,unsigned cutoff);
     void                        make_space();
     void                        make_lits_space(uint64_t num_lits){_num_lits=num_lits;_lits.resize(num_lits+_additional_len);};
     void                        initialize();

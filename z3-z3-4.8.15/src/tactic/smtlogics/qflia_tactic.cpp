@@ -75,10 +75,11 @@ static tactic * mk_no_cut_no_relevancy_smt_tactic(ast_manager& m, unsigned rs) {
     return annotate_tactic("no-cut-relevancy-tactic", using_params(mk_smt_tactic_using(m, false), solver_p));
 }
 
-static tactic * mk_ls_smt_tactic(ast_manager& m,  unsigned rs) {
+static tactic * mk_ls_smt_tactic(ast_manager& m,  unsigned rs, unsigned ls_time) {
     params_ref solver_p;
     solver_p.set_bool("use_ls",true);
     solver_p.set_uint("random_seed", rs);
+    solver_p.set_uint("ls_time",ls_time);
     return annotate_tactic("ls-tactic", using_params(mk_smt_tactic_using(m, false), solver_p));
 }
 
@@ -220,13 +221,11 @@ tactic * mk_qflia_tactic(ast_manager & m, params_ref const & p) {
 
     params_ref lhs_p;
     lhs_p.set_bool("arith_lhs", true);
-    params_ref p_ls;
-    p_ls.set_bool("use_ls",true);
     tactic * use_ls_tactic=
             cond(mk_or(
                 mk_ge(mk_num_bool_consts_probe(),mk_const_probe(static_cast<double>(10))),mk_has_ite_probe()),
                                                           mk_smt_tactic(m),
-                                                          or_else(try_for(mk_ls_smt_tactic(m,10),20000),
+                                                          or_else(mk_ls_smt_tactic(m,1,10),
                                                                 mk_smt_tactic(m))
                                                           );
 

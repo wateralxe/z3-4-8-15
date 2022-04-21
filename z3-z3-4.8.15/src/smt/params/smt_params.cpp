@@ -25,6 +25,7 @@ void smt_params::updt_local_params(params_ref const & _p) {
     m_auto_config = p.auto_config() && gparams::get_value("auto_config") == "true"; // auto-config is not scoped by smt in gparams.
     m_random_seed = p.random_seed();
     m_use_ls=p.use_ls();
+    m_ls_time=p.ls_time();
     m_relevancy_lvl = p.relevancy();
     m_ematching   = p.ematching();
     m_induction   = p.induction();
@@ -175,6 +176,7 @@ void smt_params::display(std::ostream & out) const {
     DISPLAY_PARAM(m_dump_goal_as_smt);
     DISPLAY_PARAM(m_auto_config);
     DISPLAY_PARAM(m_use_ls);
+    DISPLAY_PARAM(m_ls_time);
 }
 
 void smt_params::validate_string_solver(symbol const& s) const {
