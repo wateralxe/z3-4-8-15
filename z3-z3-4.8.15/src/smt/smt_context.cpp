@@ -3573,8 +3573,11 @@ namespace smt {
                     m_lia_ls_solver->build_instance(clauses_vec);
                     m_lia_ls_solver->local_search();
                     if(m_lia_ls_solver->best_found_cost==0){
-                        // m_model_generator->reset();
-                        // m_proto_model = m_model_generator->mk_model_ls(m_lia_ls_solver);
+                        try{
+                            m_model_generator->reset();
+                            m_proto_model = m_model_generator->mk_model_ls(m_lia_ls_solver);
+                        }
+                        catch (default_exception& ex) {return check_finalize(l_undef);}
                         return check_finalize(l_true);
                     }
                     return check_finalize(l_undef);
