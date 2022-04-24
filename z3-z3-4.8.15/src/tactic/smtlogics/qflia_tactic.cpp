@@ -226,7 +226,6 @@ tactic * mk_qflia_tactic(ast_manager & m, params_ref const & p) {
                 mk_ge(mk_num_bool_consts_probe(),mk_const_probe(static_cast<double>(10))),mk_has_ite_probe()),
                                                           mk_smt_tactic(m),
                                                           or_else(
-                                                              try_for(mk_smt_tactic(m),5000),
                                                               mk_ls_smt_tactic(m,1,10),
                                                                 mk_smt_tactic(m))
                                                           );
@@ -241,6 +240,7 @@ tactic * mk_qflia_tactic(ast_manager & m, params_ref const & p) {
                     using_params(mk_lia2sat_tactic(m), quasi_pb_p),
                     mk_fail_if_undecided_tactic()),
                 mk_bounded_tactic(m),
+                try_for(mk_smt_tactic(m),5000),
                 use_ls_tactic)),
         main_p);
 
