@@ -225,7 +225,9 @@ tactic * mk_qflia_tactic(ast_manager & m, params_ref const & p) {
             cond(mk_or(
                 mk_ge(mk_num_bool_consts_probe(),mk_const_probe(static_cast<double>(10))),mk_has_ite_probe()),
                                                           mk_smt_tactic(m),
-                                                          or_else(mk_ls_smt_tactic(m,1,10),
+                                                          or_else(
+                                                              try_for(mk_smt_tactic(m),5000),
+                                                              mk_ls_smt_tactic(m,1,10),
                                                                 mk_smt_tactic(m))
                                                           );
 
